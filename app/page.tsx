@@ -57,7 +57,7 @@ const Home = () => {
           <div className="w-full max-w-xl">
             <div className="flex mt-10 items-center space-x-3">
               <Image src="/1-black.png" width={30} height={30} alt="1 icon" />
-              <p className="text-left font-medium">Enter the URL of the company you'd like to connect with.</p>
+              <p className="text-left font-medium">Enter the URL of the company you&apos;d like to connect with.</p>
             </div>
             <textarea
               value={domain}
@@ -69,7 +69,7 @@ const Home = () => {
             
             <div className="flex mt-2 items-center space-x-3">
               <Image src="/2-black.png" width={30} height={30} alt="2 icon" />
-              <p className="text-left font-medium">Enter the position at the company you'd like to address.</p>
+              <p className="text-left font-medium">Enter the position at the company you&apos;d like to address.</p>
             </div>
             <textarea
               value={position}
