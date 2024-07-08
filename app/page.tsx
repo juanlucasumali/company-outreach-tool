@@ -40,10 +40,6 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    setGroqAPIKey(localStorage.getItem('groqAPIKey') || '');
-  }), [];
-
   return (
     <div className='flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 pt-10 pb-10">
