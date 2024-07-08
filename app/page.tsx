@@ -7,6 +7,7 @@ import Link from "next/link";
 const Home = () => {
   const [domain, setDomain] = useState('');
   const [position, setPosition] = useState('');
+  const [groqAPIKey, setGroqAPIKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [generatedMessages, setGeneratedMessages] = useState('');
 
@@ -22,7 +23,7 @@ const Home = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ domain, position }),
+        body: JSON.stringify({ groqAPIKey, domain, position }),
       });
 
       if (!response.ok) {
@@ -53,11 +54,20 @@ const Home = () => {
 
         <div className="relative flex flex-col items-center justify-center">
           <h1 className="text-4xl font-bold text-center mb-8">Generate outreach messages with AI</h1>
-          
           <div className="w-full max-w-xl">
             <div className="flex mt-10 items-center space-x-3">
-              <Image src="/1-black.png" width={30} height={30} alt="1 icon" />
-              <p className="text-left font-medium">Enter the URL of the company you&apos;d like to connect with.</p>
+              <p className="text-left font-medium">1. Input your Groq API key here</p>
+            </div>
+            <textarea
+              value={groqAPIKey}
+              onChange={(e) => setGroqAPIKey(e.target.value)}
+              rows={1}
+              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5 p-2"
+              placeholder={'e.g. gsk_WPKs8lknOajJOI3K2LMNapnJ0Sksbv9SU3NSM'}
+            />
+
+            <div className="flex mt-2 items-center space-x-3">
+              <p className="text-left font-medium">2. Enter the URL of the company you&apos;d like to connect with.</p>
             </div>
             <textarea
               value={domain}
@@ -68,8 +78,7 @@ const Home = () => {
             />
             
             <div className="flex mt-2 items-center space-x-3">
-              <Image src="/2-black.png" width={30} height={30} alt="2 icon" />
-              <p className="text-left font-medium">Enter the position at the company you&apos;d like to address.</p>
+              <p className="text-left font-medium">3. Enter the position at the company you&apos;d like to address.</p>
             </div>
             <textarea
               value={position}
