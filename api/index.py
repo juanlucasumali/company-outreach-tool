@@ -10,24 +10,29 @@ class MessageRequest(BaseModel):
     position: str
 
 class MessageResponse(BaseModel):
-    messages: List[str]
+    messages: str
+
+# INITIALIZING CREWAI
+import os
+from crewai import Process, Agent, Task, Crew
+from langchain_groq import ChatGroq
+from langchain_community.llms import Ollama
+from crewai_tools import ScrapeWebsiteTool
+from urllib.parse import urlparse
+from datetime import datetime
+
+os.environ["OPENAI_API_KEY"] = "NA"
+llm=ChatGroq(temperature=0,
+             model_name=os.environ.get('MODEL_NAME'),
+             api_key=os.environ.get('GROQ_API_KEY'))
 
 @app.post("/api/generate_messages", response_model=MessageResponse)
 async def generate_messages(request: MessageRequest):
     try:
-        # This is a placeholder for your actual message generation logic
-        # You would typically use the domain and position to generate custom messages
-        sample_messages = [
-            f"Hello! I noticed your work at {request.domain} and I'm impressed with your company's innovations.",
-            f"As a {request.position} at {request.domain}, I believe you might be interested in our services.",
-            f"I've been following {request.domain}'s progress and would love to discuss how we could collaborate."
-        ]
         
-        # Randomly select 1-3 messages
-        num_messages = random.randint(1, 3)
-        generated_messages = random.sample(sample_messages, num_messages)
+        company_info_raw = ScrapeWebsiteTool(website_url=request.domain).run()
         
-        return MessageResponse(messages=generated_messages)
+        return MessageResponse(messages=company_info_raw)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

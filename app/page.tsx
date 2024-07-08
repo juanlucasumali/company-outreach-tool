@@ -87,7 +87,8 @@ const Home = () => {
               {loading ? 'Generating...' : 'Generate your messages →'}
             </button>
           </div>
-
+          
+          {/* TODO: Handle edge case where generatedMessages is a werid symbol dump */}
           {generatedMessages && (
             <div className="mt-8 w-full max-w-xl">
               <h2 className="text-2xl font-bold mb-4">Your generated messages:</h2>
