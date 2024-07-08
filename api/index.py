@@ -1,7 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
-import os
 from langchain_groq import ChatGroq
 from .tools import web_scraper
 

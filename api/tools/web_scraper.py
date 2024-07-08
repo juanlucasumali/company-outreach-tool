@@ -1,5 +1,8 @@
-from crewai_tools import ScrapeWebsiteTool
+import requests
+from bs4 import BeautifulSoup
 
 def scrape_website(url):
-    web_scraper_tool = ScrapeWebsiteTool(website_url=url)
-    return web_scraper_tool.run()
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    result = soup.get_text()
+    return result
