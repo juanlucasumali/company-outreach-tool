@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 
@@ -39,6 +39,10 @@ const Home = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setGroqAPIKey(localStorage.getItem('groqAPIKey') || '');
+  }), [];
 
   return (
     <div className='flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
