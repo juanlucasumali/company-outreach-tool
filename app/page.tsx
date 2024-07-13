@@ -45,67 +45,58 @@ const Home = () => {
     });
   };
 
-  // TODO: Replace everything with ShadCN components.
   return (
-    <div className='flex max-w-full mx-auto flex-row h-screen'>
+    <div className="flex flex-col md:flex-row max-w-full mx-auto h-screen">
       {/* Left Column - Inputs (Fixed) */}
-      <div className="w-1/2 p-10 overflow-y-auto fixed left-0 top-10 bottom-30">
+      <div className="md:w-1/2 p-10 overflow-y-auto md:fixed left-0 top-10 bottom-30 w-full">
         <h1 className="text-4xl font-bold text-left mb-8">Generate outreach messages with AI</h1>
         
         <div className="flex flex-col space-y-6">
           <div>
-            <p className="text-left font-medium mb-2">1. Input your Groq API key here</p>
-            <textarea
-              value={groqAPIKey}
-              onChange={(e) => setGroqAPIKey(e.target.value)}
-              rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2 whitespace-nowrap"
-              placeholder={'e.g. gsk_WPKs8lknOajJOI3K2LMNapnJ0Sksbv9SU3NSM'}
-            />
-          </div>
-
-          <div>
-            <p className="text-left font-medium mb-2">2. Enter your Supabase URL and key</p>
-            <div className="flex space-x-4">
-              <textarea
-                value={supabaseUrl}
-                onChange={(e) => setSupabaseUrl(e.target.value)}
-                rows={1}
-                placeholder=" Supabase URL"
-                className="w-1/2 resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2  whitespace-nowrap"
-              />
-              <textarea
-                value={supabaseKey}
-                onChange={(e) => setSupabaseKey(e.target.value)}
-                rows={1}
-                placeholder=" Supabase Key"
-                className="w-1/2 resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2 whitespace-nowrap"
-              />
-            </div>
-          </div>
-
-          <div>
-            <p className="text-left font-medium mb-2">3. Enter the URL of the company you&apos;d like to connect with.</p>
-            <textarea
+            <input
+              type="text"
+              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              placeholder="Enter domain"
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
-              rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
-              placeholder={'e.g. https://www.bsi.uk.com/'}
             />
           </div>
-
           <div>
-            <p className="text-left font-medium mb-2">4. Enter the position at the company you&apos;d like to address.</p>
-            <textarea
+            <input
+              type="text"
+              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              placeholder="e.g. CEO, CTO, MD, etc."
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
-              placeholder={'e.g. CEO, CTO, MD, etc.'}
             />
           </div>
-          
+          <div>
+            <input
+              type="text"
+              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              placeholder="Enter GROQ API Key"
+              value={groqAPIKey}
+              onChange={(e) => setGroqAPIKey(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              placeholder="Enter Supabase URL"
+              value={supabaseUrl}
+              onChange={(e) => setSupabaseUrl(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              placeholder="Enter Supabase Key"
+              value={supabaseKey}
+              onChange={(e) => setSupabaseKey(e.target.value)}
+            />
+          </div>
           <button
             className={`bg-black rounded-xl text-white font-medium px-4 py-2 mt-4 hover:bg-black/80 w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={generateMessages}
@@ -117,7 +108,7 @@ const Home = () => {
       </div>
 
       {/* Right Column - Results (Scrollable) */}
-      <div className="w-1/2 p-8 bg-gray-100 overflow-y-auto ml-[50%]">
+      <div className="md:w-1/2 p-8 bg-gray-100 overflow-y-auto mt-10 md:mt-0 w-full">
         {runId && (
           <div>
             <h2 className="text-2xl font-bold mb-4 text-left">Generation Progress:</h2>
