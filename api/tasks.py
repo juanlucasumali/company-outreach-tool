@@ -1,6 +1,7 @@
 from crewai import Task
+from . import utils
 
-def get_summarize_company(company_info_raw, company_name, current_run, company_info_summarizer):
+def get_summarize_company(company_info_raw, company_name, current_run, company_info_summarizer, supabase_url, supabase_key):
     summarize_company = Task(
         description=f"Summarize the company's technology infrastructure based on the scraped data: {company_info_raw}",
         expected_output="""
@@ -23,10 +24,11 @@ def get_summarize_company(company_info_raw, company_name, current_run, company_i
         """,
         output_file=f"/output/{company_name}/{current_run}/company-summary.txt",
         agent=company_info_summarizer,
+        callback=utils.create_callback(company_name, current_run, "company_summary", supabase_url, supabase_key)
     )
     return summarize_company
 
-def get_analyze_pain_points(company_name, current_run, pain_point_analyzer):
+def get_analyze_pain_points(company_name, current_run, pain_point_analyzer, supabase_url, supabase_key):
     analyze_pain_points = Task(
         description="Analyze the company's technology infrastructure to identify hardware-related pain points and optimization opportunities.",
         expected_output="""
@@ -86,10 +88,11 @@ def get_analyze_pain_points(company_name, current_run, pain_point_analyzer):
         """,
         output_file=f"/output/{company_name}/{current_run}/pain-point-analysis.txt",
         agent=pain_point_analyzer,
+        callback=utils.create_callback(company_name, current_run, "pain_point_analysis", supabase_url, supabase_key)
     )
     return analyze_pain_points
 
-def get_match_solutions(company_name, current_run, solution_matcher):
+def get_match_solutions(company_name, current_run, solution_matcher, supabase_url, supabase_key):
     match_solutions = Task(
         description="Analyze the pain points identified by the pain_point_analyzer and create a comprehensive mapping of how BSI's solutions, expertise, and partnerships can address each issue. Highlight BSI's unique value proposition for each pain point.",
         expected_output="""
@@ -142,10 +145,11 @@ def get_match_solutions(company_name, current_run, solution_matcher):
         """,
         output_file=f"/output/{company_name}/{current_run}/solution-mapping.txt",
         agent=solution_matcher,
+        callback=utils.create_callback(company_name, current_run, "solution_mapping", supabase_url, supabase_key)
     )
     return match_solutions
 
-def get_create_outreach_messages(position_to_contact, company_name, current_run, outreach_message_creator):
+def get_create_outreach_messages(position_to_contact, company_name, current_run, outreach_message_creator, supabase_url, supabase_key):
     create_outreach_messages = Task(
         description=f"Create a compelling LinkedIn message and email for the {position_to_contact} of {company_name}, based on the solution mapping provided and the key phrases provided. Do not replace anything within curly brackets, leave it as a placeholder for a human to fill out. Ensure the messages are concise, persuasive, and tailored to resonate with a high-level executive.",
         expected_output="""
@@ -218,5 +222,6 @@ def get_create_outreach_messages(position_to_contact, company_name, current_run,
         """,
         output_file=f"/output/{company_name}/{current_run}/outreach-messages.txt",
         agent=outreach_message_creator,
+        callback=utils.create_callback(company_name, current_run, "outreach_messages", supabase_url, supabase_key)
     )
     return create_outreach_messages
