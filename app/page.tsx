@@ -1,8 +1,14 @@
-"use client";
+"use client"
 
-import { useResults } from '@/hooks/useResults';
 import React, { useState } from 'react';
+import { useResults } from '@/hooks/useResults';
 import { v4 as uuidv4 } from 'uuid';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, Copy, ChevronDown, ChevronUp } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Home = () => {
   const [domain, setDomain] = useState('');
@@ -11,8 +17,9 @@ const Home = () => {
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseKey, setSupabaseKey] = useState('');
   const [runId, setRunId] = useState<string | null>(null);
-
   const { results, loading, error } = useResults(runId, supabaseUrl, supabaseKey);
+  const { toast } = useToast();
+  const [expandedCards, setExpandedCards] = useState<ExpandedCardsType>({});
 
   const generateMessages = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,104 +46,152 @@ const Home = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
+      toast({
+        title: "Copied to clipboard",
+        description: "The message has been copied to your clipboard.",
+      });
     }).catch(err => {
       console.error('Failed to copy: ', err);
     });
   };
 
+  interface ResultsType {
+    [key: string]: string | null;
+  }
+  
+  interface ExpandedCardsType {
+    [key: string]: boolean;
+  }
+  
+  interface ResultCardProps {
+    title: string;
+    content: string | null;
+    isExpanded: boolean;
+    onToggle: () => void;
+    onCopy: (text: string) => void;
+  }
+  
+  const ResultCard: React.FC<ResultCardProps> = ({ title, content, isExpanded, onToggle, onCopy }) => (
+    <Card className="mb-4">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium capitalize">
+          {title.replace(/_/g, ' ')}
+        </CardTitle>
+        <div className="flex space-x-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => content && onCopy(content)}
+            disabled={!content}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={onToggle}
+          >
+            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className={`overflow-auto transition-all duration-200 ease-in-out ${isExpanded ? 'h-96' : 'h-24'}`}>
+          <pre className="whitespace-pre-wrap text-sm">{content || "Loading..."}</pre>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+
+  const toggleCardExpansion = (key: string) => {
+    setExpandedCards(prev => ({...prev, [key]: !prev[key]}));
+  };
+
   return (
-    <div className="flex flex-col md:flex-row max-w-full mx-auto h-screen">
-      {/* Left Column - Inputs (Fixed) */}
-      <div className="md:w-1/2 p-10 overflow-y-auto md:fixed left-0 top-10 bottom-30 w-full">
-        <h1 className="text-4xl font-bold text-left mb-8">Generate outreach messages with AI</h1>
-        
-        <div className="flex flex-col space-y-6">
-          <div>
-            <input
+    <div className="flex flex-col lg:flex-row h-screen">
+      {/* Left Column - Inputs */}
+      <div className="lg:w-1/2 p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold">🏢 Company Outreach Tool</CardTitle>
+            <CardDescription className='text-gray-500 mt-2' >Use a multi-agent workflow to generate your messages!</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input
               type="text"
-              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
-              placeholder="Enter domain"
+              placeholder="Enter website URL"
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
             />
-          </div>
-          <div>
-            <input
+            <Input
               type="text"
-              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
-              placeholder="e.g. CEO, CTO, MD, etc."
+              placeholder="Enter position (e.g. CEO, CTO, MD)"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
             />
-          </div>
-          <div>
-            <input
+            <Input
               type="text"
-              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
-              placeholder="Enter GROQ API Key"
+              placeholder="Enter Groq Key"
               value={groqAPIKey}
               onChange={(e) => setGroqAPIKey(e.target.value)}
             />
-          </div>
-          <div>
-            <input
+            <Input
               type="text"
-              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
               placeholder="Enter Supabase URL"
               value={supabaseUrl}
               onChange={(e) => setSupabaseUrl(e.target.value)}
             />
-          </div>
-          <div>
-            <input
+            <Input
               type="text"
-              className="block w-full border-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
               placeholder="Enter Supabase Key"
               value={supabaseKey}
               onChange={(e) => setSupabaseKey(e.target.value)}
             />
-          </div>
-          <button
-            className={`bg-black rounded-xl text-white font-medium px-4 py-2 mt-4 hover:bg-black/80 w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            onClick={generateMessages}
-            disabled={loading}
-          >
-            {loading ? 'Generating...' : 'Generate your messages →'}
-          </button>
-        </div>
+            <Button
+              variant="outline"
+              className="w-full bg-black text-white"
+              onClick={generateMessages}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                'Generate your messages →'
+              )}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Right Column - Results (Scrollable) */}
-      <div className="md:w-1/2 p-8 bg-gray-100 overflow-y-auto mt-10 md:mt-0 w-full">
-        {runId && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-left">Generation Progress:</h2>
-            {error && <p className="text-red-500 text-left">{error}</p>}
-            {Object.entries(results).map(([key, value]) => (
-              <div key={key} className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold capitalize text-left">{key.replace(/_/g, ' ')}:</h3>
-                  {value && (
-                    <button
-                      onClick={() => copyToClipboard(value)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                    >
-                      Copy
-                    </button>
-                  )}
-                </div>
-                {value === null ? (
-                  <p className="italic text-gray-500 text-left">Loading...</p>
-                ) : (
-                  <div className="bg-white rounded-xl shadow-md p-4 text-left overflow-y-auto h-[200px]">
-                    <pre className="whitespace-pre-wrap">{value}</pre>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Right Column - Results */}
+      <div className="lg:w-1/2 p-6 flex items-center justify-center bg-gray-100">
+        <Card className="w-full max-w-md h-full">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center">Generation Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {error && <p className="text-red-500 text-center">{error}</p>}
+            {runId ? (
+              <ScrollArea className="h-[calc(100vh-200px)] pr-4">
+                {Object.entries(results as unknown as ResultsType).map(([key, value]) => (
+                  <ResultCard 
+                    key={key} 
+                    title={key} 
+                    content={value} 
+                    isExpanded={!!expandedCards[key]}
+                    onToggle={() => toggleCardExpansion(key)}
+                    onCopy={copyToClipboard}
+                  />
+                ))}
+              </ScrollArea>
+            ) : (
+              <p className="text-center text-gray-500 italic">No messages generated yet. Fill in the form and click 'Generate' to start.</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
