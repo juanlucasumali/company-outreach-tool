@@ -20,11 +20,18 @@ const Home = () => {
     setRunId(newRunId);
 
     try {
-      await fetch('/api/generate_messages', {
+      const response = await fetch('https://company-outreach-tool-ny6iukcxna-uc.a.run.app/api/generate_messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ groqAPIKey, domain, position, runId: newRunId, supabaseUrl, supabaseKey }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Data: ", data);
     } catch (error) {
       console.error('Error:', error);
     }
