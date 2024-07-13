@@ -188,7 +188,7 @@ const Home = () => {
                 ))}
               </ScrollArea>
             ) : (
-              <p className="text-center text-gray-500 italic">No messages generated yet. Fill in the form and click 'Generate' to start.</p>
+              <p className="text-center text-gray-500 italic">No messages generated yet. Fill in the form and click &apos;Generate&apos; to start.</p>
             )}
           </CardContent>
         </Card>
