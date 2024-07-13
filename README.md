@@ -1,5 +1,8 @@
 # AI-Powered Company Outreach Tool
 
+[<img width="1034" alt="Screenshot 2024-07-13 at 2 47 49 AM" src="https://github.com/user-attachments/assets/cdaa04c0-a023-4690-a37c-c9f718307e01">](https://youtu.be/_z_-C78aBIQ)
+[Link to demo!](https://youtu.be/_z_-C78aBIQ)
+
 ## Project Overview
 This project is a proof-of-concept AI-driven company outreach tool that automates the process of generating personalized business communications. It leverages Meta's Llama 70 LLM via Groq's fast AI inference API in concurrance with crewAI, a platform for multi AI agents systems. At a high level, this tool executes an agentic workflow that 1. analyzes company websites, 2. identifies pain points, 3. maps company-specific solutions to pain points, and 4. creates tailored outreach messages for potential clients or partners.
 
