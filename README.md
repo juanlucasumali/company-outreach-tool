@@ -1,42 +1,65 @@
-<p align="center">
-  <a href="https://nextjs-fastapi-starter.vercel.app/">
-    <h3 align="center">Company Outreach Tool</h3>
-  </a>
-</p>
+# AI-Powered Company Outreach Tool
 
-<p align="center">Automate away!</p>
+[<img width="1034" alt="Screenshot 2024-07-13 at 2 47 49 AM" src="https://github.com/user-attachments/assets/cdaa04c0-a023-4690-a37c-c9f718307e01">](https://youtu.be/_z_-C78aBIQ)
+[Link to demo!](https://youtu.be/_z_-C78aBIQ)
 
-<br/>
+## Project Overview
+This project is a proof-of-concept AI-driven company outreach tool that automates the process of generating personalized business communications. It leverages Meta's Llama 70 LLM via Groq's fast AI inference API in concurrance with crewAI, a platform for multi AI agents systems. At a high level, this tool executes an agentic workflow that 1. analyzes company websites, 2. identifies pain points, 3. maps company-specific solutions to pain points, and 4. creates tailored outreach messages for potential clients or partners.
 
-## Introduction
+## Key Features
+- Web scraping of target company websites
+- AI-powered analysis of company information
+- Automated identification of business pain points
+- Generation of customized solution proposals
+- Creation of personalized outreach messages (LinkedIn and email)
+- Real-time progress tracking and result display
 
-This is a hybrid Next.js + Python app that uses Next.js as the frontend and FastAPI as the API backend to run CrewAI. Output files are stored in the `output` directory at root level.
+## Technology Stack
 
-## How It Works
+### Frontend
+- Next.js 13 (React framework)
+- TypeScript
+- Tailwind CSS for styling
+- React Hooks for state management
 
-1. Input your Groq API key, a website URL, and a position.
-2. Press the 'Generate your messages' button and wait ~3 minutes for all four outputs to appear in the `output` directory.
+### Backend
+- FastAPI (Python web framework)
+- Langchain for AI model integration
+- CrewAI for orchestrating multiple AI agents
+- Groq API for accessing large language models
 
-## Getting Started
+### Database and Real-time Updates
+- Supabase for database and real-time subscriptions
 
-1. Clone and `cd` into the repo:
+### AI and Machine Learning
+- Groq's LLaMA 3 70B model for natural language processing tasks
 
-```bash
-git clone https://github.com/juanlucasumali/company-outreach-tool.git
-cd company-outreach-tool
-```
-2. (Recommended: activate a virtual enviornment/conda environment before proceeding.) Install dependencies:
+### Cloud Infrastructure and Deployment
+- Vercel for frontend hosting and deployment
+- Google Cloud Run for serverless backend deployment
+- Google Cloud Build for CI/CD pipeline
 
-```bash
-npm install
-```
+### Development and Version Control
+- Git for version control
+- GitHub for repository hosting
 
-3. Then, run the development server:
+## Architecture Highlights
+- Microservices architecture with separate frontend and backend services
+- Frontend deployed on Vercel for optimal performance and easy updates
+- Serverless backend deployment on Google Cloud Run for scalability and cost-efficiency
+- Real-time data synchronization between backend processes and frontend UI
+- Asynchronous task processing for handling long-running AI operations
 
-```bash
-npm run dev
-```
+## Key Integrations
+- Integration with Groq's API for accessing state-of-the-art language models
+- Supabase integration for real-time database updates and secure data storage
+- Custom web scraping solution for gathering company information
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development Process
+- Agile development methodology
+- Continuous Integration and Continuous Deployment (CI/CD) with Vercel for frontend and Google Cloud Build for backend
+- Emphasis on modular and reusable code structures
 
-5. Happy automating!
+## Challenges and Solutions
+- Designed a flexible agent system using CrewAI to break down complex tasks into manageable subtasks
+- Optimized API requests to balance performance and cost when interacting with AI models
