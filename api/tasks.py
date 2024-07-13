@@ -1,5 +1,5 @@
 from crewai import Task
-from .utils import supabase_functions
+from . import utils
 
 def get_summarize_company(company_info_raw, company_name, current_run, company_info_summarizer, supabase_url, supabase_key):
     summarize_company = Task(
@@ -24,7 +24,7 @@ def get_summarize_company(company_info_raw, company_name, current_run, company_i
         """,
         output_file=f"/output/{company_name}/{current_run}/company-summary.txt",
         agent=company_info_summarizer,
-        callback=supabase_functions.create_callback(company_name, current_run, "company_summary", supabase_url, supabase_key)
+        callback=utils.create_callback(company_name, current_run, "company_summary", supabase_url, supabase_key)
     )
     return summarize_company
 
@@ -88,7 +88,7 @@ def get_analyze_pain_points(company_name, current_run, pain_point_analyzer, supa
         """,
         output_file=f"/output/{company_name}/{current_run}/pain-point-analysis.txt",
         agent=pain_point_analyzer,
-        callback=supabase_functions.create_callback(company_name, current_run, "pain_point_analysis", supabase_url, supabase_key)
+        callback=utils.create_callback(company_name, current_run, "pain_point_analysis", supabase_url, supabase_key)
     )
     return analyze_pain_points
 
@@ -145,7 +145,7 @@ def get_match_solutions(company_name, current_run, solution_matcher, supabase_ur
         """,
         output_file=f"/output/{company_name}/{current_run}/solution-mapping.txt",
         agent=solution_matcher,
-        callback=supabase_functions.create_callback(company_name, current_run, "solution_mapping", supabase_url, supabase_key)
+        callback=utils.create_callback(company_name, current_run, "solution_mapping", supabase_url, supabase_key)
     )
     return match_solutions
 
@@ -222,6 +222,6 @@ def get_create_outreach_messages(position_to_contact, company_name, current_run,
         """,
         output_file=f"/output/{company_name}/{current_run}/outreach-messages.txt",
         agent=outreach_message_creator,
-        callback=supabase_functions.create_callback(company_name, current_run, "outreach_messages", supabase_url, supabase_key)
+        callback=utils.create_callback(company_name, current_run, "outreach_messages", supabase_url, supabase_key)
     )
     return create_outreach_messages

@@ -38,6 +38,7 @@ const Home = () => {
     });
   };
 
+  // TODO: Replace everything with ShadCN components.
   return (
     <div className='flex max-w-full mx-auto flex-row h-screen'>
       {/* Left Column - Inputs (Fixed) */}
@@ -51,7 +52,7 @@ const Home = () => {
               value={groqAPIKey}
               onChange={(e) => setGroqAPIKey(e.target.value)}
               rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
+              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2 whitespace-nowrap"
               placeholder={'e.g. gsk_WPKs8lknOajJOI3K2LMNapnJ0Sksbv9SU3NSM'}
             />
           </div>

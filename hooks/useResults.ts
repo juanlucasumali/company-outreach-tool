@@ -25,33 +25,6 @@ export const useResults = (runId: string | null, supabaseUrl: string, supabaseKe
     setLoading(true);
     setError(null);
 
-    // Initial fetch
-    const fetchInitialData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('company_outreach_tool')
-          .select('company_summary, pain_point_analysis, solution_mapping, outreach_messages')
-          .eq('current_run', runId)
-          .single();
-
-        if (error) throw error;
-
-        if (data) {
-          setResults(prevResults => ({
-            ...prevResults,
-            ...Object.fromEntries(
-              Object.entries(data).filter(([_, value]) => value !== null && value !== '')
-            ),
-          }));
-        }
-      } catch (error) {
-        console.error('Initial fetch error:', error);
-        setError('An error occurred while fetching initial results');
-      }
-    };
-
-    fetchInitialData();
-
     // Set up real-time subscription
     const subscription = supabase
       .channel('company_outreach_changes')

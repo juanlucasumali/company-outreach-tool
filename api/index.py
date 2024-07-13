@@ -3,8 +3,7 @@ from pydantic import BaseModel
 from langchain_groq import ChatGroq
 from fastapi import FastAPI, HTTPException
 from crewai import Process, Crew
-from .utils import web_scraper, helper_functions
-from . import agents, tasks
+from . import agents, tasks, utils
 from supabase import create_client, Client
 
 app = FastAPI()
@@ -31,7 +30,7 @@ async def generate_messages(request: MessageRequest):
             api_key=request.groqAPIKey)
         
         # Set up run variables
-        company_name = helper_functions.get_company_name_from_domain(request.domain)
+        company_name = utils.get_company_name_from_domain(request.domain)
         current_run = request.runId
 
         # Set up Supabase client
@@ -39,7 +38,7 @@ async def generate_messages(request: MessageRequest):
 
         print("Scraping webpage...")
         # Scrape inputted webpage
-        scraped_result = web_scraper.scrape_website(request.domain)
+        scraped_result = utils.scrape_website(request.domain)
         
         print("Creating crew...")
         crew = Crew(
