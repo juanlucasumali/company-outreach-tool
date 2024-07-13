@@ -1,113 +1,144 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from "next/image";
-import Link from "next/link";
+import { useResults } from '@/hooks/useResults';
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const Home = () => {
   const [domain, setDomain] = useState('');
   const [position, setPosition] = useState('');
   const [groqAPIKey, setGroqAPIKey] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [generatedMessages, setGeneratedMessages] = useState('');
+  const [supabaseUrl, setSupabaseUrl] = useState('');
+  const [supabaseKey, setSupabaseKey] = useState('');
+  const [runId, setRunId] = useState<string | null>(null);
 
-  const generateMessages = async (e: any) => {
+  const { results, loading, error } = useResults(runId, supabaseUrl, supabaseKey);
+
+  const generateMessages = async (e: React.FormEvent) => {
     e.preventDefault();
-    setGeneratedMessages('');
-    setLoading(true);
-    console.log('Domain, position:', domain, position);
+    const newRunId = uuidv4();
+    setRunId(newRunId);
 
     try {
-      const response = await fetch('/api/generate_messages', {
+      await fetch('/api/generate_messages', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ groqAPIKey, domain, position }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groqAPIKey, domain, position, runId: newRunId, supabaseUrl, supabaseKey }),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setGeneratedMessages(data.messages);
     } catch (error) {
       console.error('Error:', error);
-      setGeneratedMessages('An error occurred while generating messages.');
-    } finally {
-      setLoading(false);
     }
   };
 
-  return (
-    <div className='flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
-      <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 pt-10 pb-10">
-        {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-          <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-            Get started by editing&nbsp;
-            <Link href="/api/python">
-              <code className="font-mono font-bold">api/index.py</code>
-            </Link>
-          </p>
-        </div> */}
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  };
 
-        <div className="relative flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold text-center mb-8">Generate outreach messages with AI</h1>
-          <div className="w-full max-w-xl">
-            <div className="flex mt-10 items-center space-x-3">
-              <p className="text-left font-medium">1. Input your Groq API key here</p>
-            </div>
+  return (
+    <div className='flex max-w-full mx-auto flex-row h-screen'>
+      {/* Left Column - Inputs (Fixed) */}
+      <div className="w-1/2 p-10 overflow-y-auto fixed left-0 top-10 bottom-30">
+        <h1 className="text-4xl font-bold text-left mb-8">Generate outreach messages with AI</h1>
+        
+        <div className="flex flex-col space-y-6">
+          <div>
+            <p className="text-left font-medium mb-2">1. Input your Groq API key here</p>
             <textarea
               value={groqAPIKey}
               onChange={(e) => setGroqAPIKey(e.target.value)}
               rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5 p-2"
+              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
               placeholder={'e.g. gsk_WPKs8lknOajJOI3K2LMNapnJ0Sksbv9SU3NSM'}
             />
+          </div>
 
-            <div className="flex mt-2 items-center space-x-3">
-              <p className="text-left font-medium">2. Enter the URL of the company you&apos;d like to connect with.</p>
+          <div>
+            <p className="text-left font-medium mb-2">2. Enter your Supabase URL and key</p>
+            <div className="flex space-x-4">
+              <textarea
+                value={supabaseUrl}
+                onChange={(e) => setSupabaseUrl(e.target.value)}
+                rows={1}
+                placeholder=" Supabase URL"
+                className="w-1/2 resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2  whitespace-nowrap"
+              />
+              <textarea
+                value={supabaseKey}
+                onChange={(e) => setSupabaseKey(e.target.value)}
+                rows={1}
+                placeholder=" Supabase Key"
+                className="w-1/2 resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2 whitespace-nowrap"
+              />
             </div>
+          </div>
+
+          <div>
+            <p className="text-left font-medium mb-2">3. Enter the URL of the company you&apos;d like to connect with.</p>
             <textarea
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
               rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5 p-2"
+              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
               placeholder={'e.g. https://www.bsi.uk.com/'}
             />
-            
-            <div className="flex mt-2 items-center space-x-3">
-              <p className="text-left font-medium">3. Enter the position at the company you&apos;d like to address.</p>
-            </div>
+          </div>
+
+          <div>
+            <p className="text-left font-medium mb-2">4. Enter the position at the company you&apos;d like to address.</p>
             <textarea
               value={position}
               onChange={(e) => setPosition(e.target.value)}
               rows={1}
-              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5 p-2"
+              className="w-full resize-none rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black p-2"
               placeholder={'e.g. CEO, CTO, MD, etc.'}
             />
-            
-            <button
-              className={`bg-black rounded-xl text-white font-medium px-4 py-2 mt-8 hover:bg-black/80 w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={generateMessages}
-              disabled={loading}
-            >
-              {loading ? 'Generating...' : 'Generate your messages →'}
-            </button>
           </div>
           
-          {/* TODO: Handle edge case where generatedMessages is a werid symbol dump */}
-          {generatedMessages && (
-            <div className="mt-8 w-full max-w-xl">
-              <h2 className="text-2xl font-bold mb-4">Your generated messages:</h2>
-              <div className="bg-white rounded-xl shadow-md p-4 whitespace-pre-wrap">
-                {generatedMessages}
-              </div>
-            </div>
-          )}
+          <button
+            className={`bg-black rounded-xl text-white font-medium px-4 py-2 mt-4 hover:bg-black/80 w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={generateMessages}
+            disabled={loading}
+          >
+            {loading ? 'Generating...' : 'Generate your messages →'}
+          </button>
         </div>
-      </main>
+      </div>
+
+      {/* Right Column - Results (Scrollable) */}
+      <div className="w-1/2 p-8 bg-gray-100 overflow-y-auto ml-[50%]">
+        {runId && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 text-left">Generation Progress:</h2>
+            {error && <p className="text-red-500 text-left">{error}</p>}
+            {Object.entries(results).map(([key, value]) => (
+              <div key={key} className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold capitalize text-left">{key.replace(/_/g, ' ')}:</h3>
+                  {value && (
+                    <button
+                      onClick={() => copyToClipboard(value)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                    >
+                      Copy
+                    </button>
+                  )}
+                </div>
+                {value === null ? (
+                  <p className="italic text-gray-500 text-left">Loading...</p>
+                ) : (
+                  <div className="bg-white rounded-xl shadow-md p-4 text-left overflow-y-auto h-[200px]">
+                    <pre className="whitespace-pre-wrap">{value}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -9,6 +9,3 @@ def get_company_name_from_domain(url):
         domain = domain[4:]
     company_name = domain.split('.')[0]
     return company_name
-
-def get_current_date_time():
-    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
